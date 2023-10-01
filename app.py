@@ -33,7 +33,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import os
 
 
-SYSTEM_PROMPT = "Ты — Сайга, русскоязычный автоматический ассистент. Ты разговариваешь с людьми и помогаешь им."
+SYSTEM_PROMPT = "Ты — СмартКонсалт, русскоязычный автоматический ассистент. Ты разговариваешь с людьми и помогаешь им."
 SYSTEM_TOKEN = 1788
 USER_TOKEN = 1404
 BOT_TOKEN = 9225
