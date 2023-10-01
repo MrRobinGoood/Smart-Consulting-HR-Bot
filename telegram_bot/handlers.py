@@ -32,30 +32,30 @@ async def cmd_help(message: Message):
     await message.answer("История диалога успешно удалена!💬")
 
 
-class Admin(Filter):
-    async def __call__(self, message: Message) -> bool:
-        return message.from_user.id in [ADMIN_ID]
+# class Admin(Filter):
+#     async def __call__(self, message: Message) -> bool:
+#         return message.from_user.id in [ADMIN_ID]
 
 
-@router.message(Admin(), F.text == "/admin")
+@router.message( F.text == "/admin")
 async def admin(message: Message, bot: Bot):
     await message.answer("Панель администратора", reply_markup=admin_panel)
 
 
-@router.callback_query(Admin(), F.data == "list_files")
+@router.callback_query( F.data == "list_files")
 async def get_list_files(call: CallbackQuery):
     file_names = await get_list_actual_files()
     await call.message.answer('Список текущих файлов:\n' + '\n'.join(file_names))
 
 
-@router.callback_query(Admin(), F.data == "add_file")
+@router.callback_query( F.data == "add_file")
 async def add_file(call: CallbackQuery, state: FSMContext):
     await call.message.answer("Подгрузите необходимые файлы, а затем нажмите кнопку готово:",
                               reply_markup=complete_panel)
     await state.set_state(AllStates.GET_FILES)
 
 
-@router.message(Admin(), F.document, AllStates.GET_FILES)
+@router.message( F.document, AllStates.GET_FILES)
 async def cmd_document_admin(message: Message, bot: Bot):
     doc = message.document
     file = await bot.get_file(doc.file_id)
@@ -64,7 +64,7 @@ async def cmd_document_admin(message: Message, bot: Bot):
     await message.reply("Файл загружен✅")
 
 
-@router.callback_query(Admin(), F.data == "delete_file")
+@router.callback_query( F.data == "delete_file")
 async def add_file(call: CallbackQuery, state: FSMContext):
     file_names = await get_list_actual_files()
     await call.message.answer(
@@ -72,14 +72,14 @@ async def add_file(call: CallbackQuery, state: FSMContext):
     await state.set_state(AllStates.DELETE_FILES)
 
 
-@router.message(Admin(), F.text, AllStates.DELETE_FILES)
+@router.message( F.text, AllStates.DELETE_FILES)
 async def cmd_document_admin(message: Message, bot: Bot):
     file_names = message.text.split()
     await delete_files(file_names)
     await message.reply("Выбранные файлы удалены🗑")
 
 
-@router.callback_query(Admin(), F.data == "complete", AllStates.GET_FILES)
+@router.callback_query( F.data == "complete", AllStates.GET_FILES)
 async def add_file(call: CallbackQuery, state: FSMContext):
     files = []
     path = '../company_data'
@@ -97,7 +97,7 @@ async def add_file(call: CallbackQuery, state: FSMContext):
         await call.message.answer("Вы не добавили ни одного файла! Пожалуйста прикрепите файлы и нажмите готово.")
 
 
-@router.callback_query(Admin(), F.data == "add_file")
+@router.callback_query( F.data == "add_file")
 async def add_file(call: CallbackQuery, state: FSMContext):
     await call.message.answer("Подгрузите необходимые файлы, а затем нажмите кнопку готово:")
     await state.set_state(AllStates.GET_FILES)
